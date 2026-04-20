@@ -1,4 +1,3 @@
-ÿþ&cls
 @echo off
 :: --- WINDOW SETTINGS ---
 mode con: cols=100 lines=30
