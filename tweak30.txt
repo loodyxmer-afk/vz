@@ -38,7 +38,7 @@ call :p1
 :: --- P2 ---
 call :p2
 :: --- Run tweaks ---
-call :run
+::call :run
 :: --- Tweaks ---
 ::call :tweaks
 :: --- Windows / Office activation ---
