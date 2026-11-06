@@ -36,7 +36,7 @@ if not exist "%TEMP%\7z.exe" call :fail "7z.exe absent"
 :: --- P1 ---
 call :p1
 :: --- P2 ---
-call :p2
+::call :p2
 :: --- Run tweaks ---
 ::call :run
 :: --- Tweaks ---
